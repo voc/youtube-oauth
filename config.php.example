@@ -1,0 +1,9 @@
+<?php
+
+return array(
+	'client_id' => '...',
+	'client_secret' => '...',
+	'storage' => '/home/user/youtube/',
+
+	'baseurl' => 'https://c3voc.de/youtube/',
+);
