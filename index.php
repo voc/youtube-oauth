@@ -151,6 +151,7 @@ else
 			'response_type' => 'code',
 			'scope' => 'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload',
 			'access_type' => 'offline',
+			'approval_prompt' => 'force',
 		))
 	));
 }
