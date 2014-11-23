@@ -36,10 +36,12 @@ if(@$_GET['oauth'] == 'callback')
 	if(!$data)
 		die("authorization_code-Request returned invalid json: $data\n\nStart again at $conf[baseurl], if you want.");
 
+	curl_close($ch);
+
 
 
 	/***** request channel-name *****/
-	curl_reset($ch);
+	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	curl_setopt($ch, CURLOPT_URL, 'https://www.googleapis.com/youtube/v3/channels?'.http_build_query(array(
 		'part' => 'id,brandingSettings',
