@@ -2,9 +2,9 @@
 
 $conf = require('config.php');
 
-if($_GET['oauth'] == 'callback')
+if(@$_GET['oauth'] == 'callback')
 {
-	header('Content-Type: text/plain');
+	header('Content-Type: text/plain; charset=utf-8');
 
 	$code = @$_GET['code'];
 	if(!$code)
