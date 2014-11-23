@@ -76,10 +76,9 @@ if($_GET['oauth'] == 'callback')
 
 	/***** send email to voc@c3voc.de *****/
 	mail(
-		//'voc@c3voc.de',
-		'peter@localhost',
-		'YouTube-Accountdaten-Lieferung',
-		'Der Kanalbesitzer von '.$data['channelname'].' hat seine YouTube-Accountdaten auf '.trim(shell_exec('hostname -f')).' eingeworfen. Ich habe sie in '.$storage." abgelegt."
+		$conf['email'],
+		'YouTube-Accountdaten-Lieferung: '.$data['channelname'],
+		'Der Kanalbesitzer von '.$data['channelname'].' hat seine YouTube-Accountdaten auf '.trim(shell_exec('hostname -f')).' eingeworfen. Ich habe sie in '.$conf['storage']." abgelegt."
 	);
 
 
