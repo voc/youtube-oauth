@@ -38,7 +38,7 @@ if(@$_GET['oauth'] == 'callback')
 		'grant_type' => 'authorization_code',
 	)));
 
-	$data = curl_exec($ch);
+	$auth = curl_exec($ch);
 	$info = curl_getinfo($ch);
 
 	$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -46,13 +46,13 @@ if(@$_GET['oauth'] == 'callback')
 	{
 		echo $tpl->render(array(
 			'error' =>
-				"authorization_code-Request failed with httpcode $httpcode: $data",
+				"authorization_code-Request failed with httpcode $httpcode: $auth",
 		));
 		exit;
 	}
 
-	$data = json_decode($data, true);
-	if(!$data)
+	$auth = json_decode($auth, true);
+	if(!$auth)
 	{
 		echo $tpl->render(array(
 			'error' =>
@@ -73,7 +73,7 @@ if(@$_GET['oauth'] == 'callback')
 		'mine' => 'true',
 	)));
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-		'Authorization: Bearer '.$data['access_token'],
+		'Authorization: Bearer '.$auth['access_token'],
 	));
 
 	$channel = curl_exec($ch);
@@ -103,15 +103,17 @@ if(@$_GET['oauth'] == 'callback')
 
 	/***** save aquired information *****/
 	$channel = reset($channel['items']);
-	$data['channel'] = $channel['id'];
-	$data['channelname'] = $channel['brandingSettings']['channel']['title'];
-	unset($data['token_type']);
-	unset($data['expires_in']);
+	$channelname = $channel['brandingSettings']['channel']['title'];
 
-	$filename = preg_replace('/[^a-z0-9_\-]/i', '-', $data['channelname']);
+	$filename = preg_replace('/[^a-z0-9_\-]/i', '-', $channelname);
 
 	// write json
-	if(!file_put_contents($conf['storage'].'/'.$filename.'.json', json_encode($data, JSON_PRETTY_PRINT)))
+	if(!file_put_contents($conf['storage'].'/'.$filename.'.txt', print_r(array(
+		'Publishing.YouTube.AccessToken' => $auth['access_token'],
+		'Publishing.YouTube.RefreshToken' => $auth['refresh_token'],
+		'Publishing.YouTube.Channel' => $channel['id'],
+
+	), true)))
 	{
 		echo $tpl->render(array(
 			'error' =>
@@ -125,8 +127,8 @@ if(@$_GET['oauth'] == 'callback')
 	/***** send email to voc@c3voc.de *****/
 	mail(
 		$conf['email'],
-		'YouTube-Accountdaten-Lieferung: '.$data['channelname'],
-		'Der Kanalbesitzer von '.$data['channelname'].' hat seine YouTube-Accountdaten auf '.trim(shell_exec('hostname -f')).' eingeworfen. Ich habe sie in '.$conf['storage']." abgelegt."
+		'YouTube-Accountdaten-Lieferung: '.$channelname,
+		'Der Kanalbesitzer von '.$channelname.' hat seine YouTube-Accountdaten auf '.trim(shell_exec('hostname -f')).' eingeworfen. Ich habe sie in '.$conf['storage']." abgelegt."
 	);
 
 
@@ -136,11 +138,11 @@ if(@$_GET['oauth'] == 'callback')
 	/***** be nice and say "Thank you!" :) *****/
 	echo $tpl->render(array(
 		'success' => true,
-		'channel' => $data['channelname'],
+		'channel' => $channelname,
 	));
 	exit;
 
-	echo "Thank you!\nThe mighty Luckycat will now publish wonderful cat-content to your channel '$data[channelname]'";
+	echo "Thank you!\nThe mighty Luckycat will now publish wonderful cat-content to your channel '$auth[channelname]'";
 }
 else
 {
