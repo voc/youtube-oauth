@@ -71,9 +71,17 @@ if(@$_GET['oauth'] == 'callback')
 
 	$filename = preg_replace('/[^a-z0-9_\-]/i', '-', $data['channelname']);
 
+	// write json
 	if(!file_put_contents($conf['storage'].'/'.$filename.'.json', json_encode($data, JSON_PRETTY_PRINT)))
 		die("saving json to $conf[storage] failed");
 
+	// write ini
+	$ini = fopen($conf['storage'].'/'.$filename.'.conf', 'w');
+	fwrite($ini, "[youtube]\n");
+	foreach($data as $key => $value) {
+		fprintf($ini, "%s=%s\n", $key, $value);
+	}
+	fclose($ini);
 
 
 	/***** send email to voc@c3voc.de *****/
