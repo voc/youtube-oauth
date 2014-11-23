@@ -1,14 +1,27 @@
 <?php
 
+require('PhpTemplate.php');
+
 $conf = require('config.php');
+$tpl = new PhpTemplate('template.phtml');
+$tpl->set(array(
+	'baseurl' => $conf['baseurl'],
+));
+
+header('Content-Type: text/html; charset=utf-8');
 
 if(@$_GET['oauth'] == 'callback')
 {
-	header('Content-Type: text/plain; charset=utf-8');
-
 	$code = @$_GET['code'];
 	if(!$code)
-		die("The code-paramete is required in callback.\nDid you deny access to the mighty Luckycat?\n\nStart again at $conf[baseurl], if you want.");
+	{
+		echo $tpl->render(array(
+			'error' =>
+				"The code-paramete is required in callback.\n".
+				"Did you deny access to the mighty Luckycat?",
+		));
+		exit;
+	}
 
 
 
@@ -30,11 +43,23 @@ if(@$_GET['oauth'] == 'callback')
 
 	$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	if(200 != $httpcode)
-		die("authorization_code-Request failed with httpcode $httpcode: $data;\n\nStart again at $conf[baseurl], if you want.");
+	{
+		echo $tpl->render(array(
+			'error' =>
+				"authorization_code-Request failed with httpcode $httpcode: $data",
+		));
+		exit;
+	}
 
 	$data = json_decode($data, true);
 	if(!$data)
-		die("authorization_code-Request returned invalid json: $data\n\nStart again at $conf[baseurl], if you want.");
+	{
+		echo $tpl->render(array(
+			'error' =>
+				"authorization_code-Request returned invalid json: $json",
+		));
+		exit;
+	}
 
 	curl_close($ch);
 
@@ -56,11 +81,23 @@ if(@$_GET['oauth'] == 'callback')
 
 	$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	if(200 != $httpcode)
-		die("Channels-Request failed with httpcode $httpcode: $channel;\n\nStart again at $conf[baseurl], if you want.");
+	{
+		echo $tpl->render(array(
+			'error' =>
+				"Channels-Request failed with httpcode $httpcode: $channel",
+		));
+		exit;
+	}
 
 	$channel = json_decode($channel, true);
 	if(!$channel)
-		die("channels-Request returned invalid json: $channel\n\nStart again at $conf[baseurl], if you want.");
+	{
+		echo $tpl->render(array(
+			'error' =>
+				"channels-Request returned invalid json: $channel",
+		));
+		exit;
+	}
 
 
 
@@ -73,7 +110,13 @@ if(@$_GET['oauth'] == 'callback')
 
 	// write json
 	if(!file_put_contents($conf['storage'].'/'.$filename.'.json', json_encode($data, JSON_PRETTY_PRINT)))
-		die("saving json to $conf[storage] failed");
+	{
+		echo $tpl->render(array(
+			'error' =>
+				"saving json to $conf[storage] failed",
+		));
+		exit;
+	}
 
 	// write ini
 	$ini = fopen($conf['storage'].'/'.$filename.'.conf', 'w');
@@ -96,15 +139,23 @@ if(@$_GET['oauth'] == 'callback')
 
 
 	/***** be nice and say "Thank you!" :) *****/
+	echo $tpl->render(array(
+		'success' => true,
+		'channel' => $data['channelname'],
+	));
+	exit;
+
 	echo "Thank you!\nThe mighty Luckycat will now publish wonderful cat-content to your channel '$data[channelname]'";
 }
 else
 {
-	header('Location: https://accounts.google.com/o/oauth2/auth?'.http_build_query(array(
-		'client_id' => $conf['client_id'],
-		'redirect_uri' => $conf['baseurl'].'?oauth=callback',
-		'response_type' => 'code',
-		'scope' => 'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload',
-		'access_type' => 'offline',
-	)));
+	echo $tpl->render(array(
+		'goto' => 'https://accounts.google.com/o/oauth2/auth?'.http_build_query(array(
+			'client_id' => $conf['client_id'],
+			'redirect_uri' => $conf['baseurl'].'?oauth=callback',
+			'response_type' => 'code',
+			'scope' => 'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload',
+			'access_type' => 'offline',
+		))
+	));
 }

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+
+		<title>YouTube OAuth Collector</title>
+
+		<style>
+			body {
+				padding: 30px;
+			}
+			.btn {
+				padding: 10px 30px;
+				background-color: #888888;
+				color: white;
+				border: 1px solid black;
+				text-decoration: none;
+			}
+			.error {
+				color: darkred;
+				font-family: monospace;
+				white-space: pre;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h1>YouTube OAuth Collector</h1>
+		<? if(@$goto): ?>
+
+			<p>Click the following button to go to YouTube and select the channel you us to publish to.</p>
+			<a class="btn" href="<?=h($goto)?>">Go to YouTube</a>
+
+
+		<? elseif(@$error): ?>
+
+			<p class="error"><?=h($error)?></p>
+			<p>Click here to <a href="<?=h($baseurl)?>">start again</a></p>
+
+		<? elseif(@$success): ?>
+
+			<h2>Thank you!</h2>
+			<p>The mighty Luckycat will now publish wonderful cat-content to your channel <strong><?=h($channel)?></strong>
+
+		<? endif ?>
+	</body>
+</html>
