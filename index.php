@@ -105,6 +105,8 @@ if(@$_GET['oauth'] == 'callback')
 	$channel = reset($channel['items']);
 	$data['channel'] = $channel['id'];
 	$data['channelname'] = $channel['brandingSettings']['channel']['title'];
+	unset($data['token_type']);
+	unset($data['expires_in']);
 
 	$filename = preg_replace('/[^a-z0-9_\-]/i', '-', $data['channelname']);
 
