@@ -118,13 +118,6 @@ if(@$_GET['oauth'] == 'callback')
 		exit;
 	}
 
-	// write ini
-	$ini = fopen($conf['storage'].'/'.$filename.'.conf', 'w');
-	fwrite($ini, "[youtube]\n");
-	foreach($data as $key => $value) {
-		fprintf($ini, "%s=%s\n", $key, $value);
-	}
-	fclose($ini);
 
 
 	/***** send email to voc@c3voc.de *****/
