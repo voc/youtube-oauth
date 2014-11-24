@@ -108,16 +108,13 @@ if(@$_GET['oauth'] == 'callback')
 	$filename = preg_replace('/[^a-z0-9_\-]/i', '-', $channelname);
 
 	// write json
-	if(!file_put_contents($conf['storage'].'/'.$filename.'.txt', print_r(array(
-		'Publishing.YouTube.AccessToken' => $auth['access_token'],
-		'Publishing.YouTube.RefreshToken' => $auth['refresh_token'],
-		'Publishing.YouTube.Channel' => $channel['id'],
-
-	), true)))
-	{
+	if(!file_put_contents($conf['storage'].'/'.$filename.'.txt',
+		"Set the following property on the Tracker-Project:\n".
+		"Publishing.YouTube.Token = ".$auth['refresh_token']."\n"
+	)) {
 		echo $tpl->render(array(
 			'error' =>
-				"saving json to $conf[storage] failed",
+				"saving settings to $conf[storage] failed",
 		));
 		exit;
 	}
