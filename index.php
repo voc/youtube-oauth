@@ -148,7 +148,7 @@ else
 			'client_id' => $conf['client_id'],
 			'redirect_uri' => $conf['baseurl'].'?oauth=callback',
 			'response_type' => 'code',
-			'scope' => 'https://www.googleapis.com/auth/youtube.readonly https://www.googleapis.com/auth/youtube.upload',
+			'scope' => 'https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.upload',
 			'access_type' => 'offline',
 			'approval_prompt' => 'force',
 		))
