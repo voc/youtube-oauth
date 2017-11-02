@@ -105,6 +105,10 @@ if(@$_GET['oauth'] == 'callback')
 	$channel = reset($channel['items']);
 	$channelname = $channel['brandingSettings']['channel']['title'];
 
+	if (empty($channelname)) {
+		$channelname = $channel['id'];
+	}
+
 	$filename = preg_replace('/[^a-z0-9_\-]/i', '-', $channelname);
 
 	// write json
