@@ -134,12 +134,11 @@ if(@$_GET['oauth'] == 'callback')
 
 
 
-
-
 	/***** be nice and say "Thank you!" :) *****/
 	echo $tpl->render(array(
 		'success' => true,
 		'channel' => $channelname,
+		'token' => $auth['refresh_token']
 	));
 	exit;
 

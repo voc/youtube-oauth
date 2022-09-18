@@ -40,8 +40,10 @@
 		<?php elseif(@$success): ?>
 
 			<h2>Thank you!</h2>
-			<p>The mighty Luckycat will now publish wonderful cat-content to your channel <strong><?=h($channel)?></strong>
-
-		<? endif ?>
+			<p>The mighty Luckycat will now publish wonderful cat-content to your channel <strong><?=h($channel)?></strong>!</p>
+			<p style="margin-top: 100px; color: #ccc;">If you have superuser or admin rights in the corresponding <a href="https://tracker.c3voc.de/">Tracker</a> project, you can also set the following project property yourself:
+				<pre style="color: #ccc; font-size: 0.5em">Publishing.YouTube.Token = <?=h($token)?></pre>
+			</p>
+		<?php endif ?>
 	</body>
 </html>
