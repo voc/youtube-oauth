@@ -26,18 +26,18 @@
 
 	<body>
 		<h1>YouTube OAuth Collector</h1>
-		<? if(@$goto): ?>
+		<?php if(@$goto): ?>
 
 			<p>Click the following button to go to YouTube and select the channel you want us to publish to.</p>
-			<a class="btn" href="<?=h($goto)?>">Go to YouTube</a>
+			<a class="btn" href="<?php echo h($goto)?>">Go to YouTube</a>
 
 
-		<? elseif(@$error): ?>
+		<?php elseif(@$error): ?>
 
-			<p class="error"><?=h($error)?></p>
-			<p>Click here to <a href="<?=h($baseurl)?>">start again</a></p>
+			<p class="error"><?php echo h($error)?></p>
+			<p>Click here to <a href="<?php echo h($baseurl)?>">start again</a></p>
 
-		<? elseif(@$success): ?>
+		<?php elseif(@$success): ?>
 
 			<h2>Thank you!</h2>
 			<p>The mighty Luckycat will now publish wonderful cat-content to your channel <strong><?=h($channel)?></strong>
